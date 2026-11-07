@@ -15,12 +15,12 @@ export const profile = {
     "I build subscription platforms, real-time apps and storefronts that stay fast when real people start using them.",
   about:
     "I'm Nayan, a MERN stack developer who likes turning big product ideas into software people actually enjoy using. I've built a multi-tenant real-estate SaaS where every subscriber gets a website on their own subdomain, a full e-commerce store, a real-time chat app and an online book reader. I care about clean architecture, quick load times and interfaces that feel alive.",
-  email: "your.email@example.com", // placeholder
-  location: "Your City, Country", // placeholder
+  email: "nayan210091@diit.edu.bd", // placeholder
+  location: "Dhaka, Bangladesh", // placeholder
   socials: {
-    github: "https://github.com/your-username", // placeholder
-    linkedin: "https://www.linkedin.com/in/your-username", // placeholder
-    twitter: "https://twitter.com/your-username", // placeholder
+    github: "https://github.com/mondalnayan007", // placeholder
+    linkedin: "https://www.linkedin.com/in/mondalnayan007", // placeholder
+    facebook: "https://www.facebook.com/na.y.an.68370", // placeholder
   },
 };
 
@@ -34,7 +34,7 @@ export const navLinks = [
 ];
 
 export const stats = [
-  { value: 4, suffix: "", label: "Full-stack products shipped" },
+  { value: 2, suffix: "", label: "Full-stack products shipped" },
   { value: 20, suffix: "+", label: "Technologies in daily use" },
   { value: 1, suffix: "", label: "Multi-tenant SaaS architecture" },
 ]; // placeholder numbers

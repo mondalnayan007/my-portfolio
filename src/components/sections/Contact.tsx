@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Check, Clock, Copy, Github, Linkedin, Loader2, Mail, MapPin, Send, Twitter } from "lucide-react";
+import { Check, Clock, Copy, Loader2, Mail, MapPin, Send, X } from "lucide-react";
 import { profile } from "@/lib/data";
 import { cn, EASE } from "@/lib/utils";
 import { sendMessage } from "@/lib/sendMessage";
@@ -24,6 +24,44 @@ function validate(v: Values): Errors {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) e.email = "Enter a valid email address.";
   if (v.message.trim().length < 10) e.message = "Write a message of at least 10 characters.";
   return e;
+}
+
+// Custom SVG Icons for Socials & External Link
+function GithubIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function ExternalIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
 }
 
 type FieldProps = {
@@ -63,11 +101,6 @@ function Field({ label, name, value, error, onChange, onBlur, type = "text", tex
           {label}
         </label>
         {optional && <span className="text-xs text-subtle">Optional</span>}
-        {textarea && (
-          <span className={cn("text-xs tabular-nums", value.length > MAX - 40 ? "text-amber-500" : "text-subtle")}>
-            {value.length}/{MAX}
-          </span>
-        )}
       </div>
       {textarea ? (
         <textarea rows={5} maxLength={MAX} {...common} className={cn(common.className, "resize-none")} />
@@ -121,7 +154,7 @@ export default function Contact() {
   const { toast } = useToast();
   const [values, setValues] = useState<Values>(empty);
   const [touched, setTouched] = useState<Partial<Record<keyof Values, boolean>>>({});
-  const [trap, setTrap] = useState(""); // honeypot for bots
+  const [trap, setTrap] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const [copied, setCopied] = useState(false);
 
@@ -169,9 +202,9 @@ export default function Contact() {
   };
 
   const socials = [
-    { icon: Github, label: "GitHub", href: profile.socials.github },
-    { icon: Linkedin, label: "LinkedIn", href: profile.socials.linkedin },
-    { icon: Twitter, label: "Twitter", href: profile.socials.twitter },
+    { icon: GithubIcon, label: "GitHub", href: profile.socials.github },
+    { icon: LinkedinIcon, label: "LinkedIn", href: profile.socials.linkedin },
+    { icon: FacebookIcon, label: "Facebook", href: profile.socials.facebook || "https://facebook.com/your-username" },
   ];
 
   return (
@@ -208,7 +241,7 @@ export default function Contact() {
               <button
                 onClick={copyEmail}
                 aria-label="Copy email address"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-fg/10 text-muted transition hover:bg-fg/10 hover:text-fg"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-fg/10 text-muted transition hover:bg-fg/10 hover:text-fg cursor-pointer"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span key={copied ? "done" : "copy"} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.15 }}>
@@ -252,7 +285,7 @@ export default function Contact() {
                     >
                       <Icon className="h-5 w-5 text-muted transition group-hover:text-accent" />
                       <span className="flex-1 font-medium text-fg">{label}</span>
-                      <ArrowUpRight className="h-4 w-4 text-subtle transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                      <ExternalIcon className="h-4 w-4 text-subtle transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
                     </a>
                   </li>
                 ))}
@@ -271,7 +304,7 @@ export default function Contact() {
               <AnimatePresence>{status === "success" && <SuccessPanel />}</AnimatePresence>
 
               <form onSubmit={onSubmit} noValidate className="space-y-6">
-                {/* honeypot — hidden from humans */}
+                {/* honeypot */}
                 <input type="text" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} className="hidden" aria-hidden />
 
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -291,7 +324,7 @@ export default function Contact() {
                           onClick={() => onChange("subject", on ? "" : t)}
                           aria-pressed={on}
                           className={cn(
-                            "relative rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                            "relative rounded-full border px-4 py-2 text-sm font-medium transition-colors cursor-pointer",
                             on ? "border-transparent text-white" : "border-fg/10 text-muted hover:border-fg/25 hover:text-fg"
                           )}
                         >
@@ -313,7 +346,7 @@ export default function Contact() {
                       disabled={status !== "idle"}
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.96 }}
-                      className="relative inline-flex min-w-[180px] items-center justify-center gap-2 overflow-hidden rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-white shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-80"
+                      className="relative inline-flex min-w-[180px] items-center justify-center gap-2 overflow-hidden rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-white shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-85 cursor-pointer"
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         <motion.span

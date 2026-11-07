@@ -41,7 +41,7 @@ function useTypewriter(words: string[], speed = 70, pause = 1600) {
 const socials = [
   { icon: Github, href: profile.socials.github, label: "GitHub" },
   { icon: Linkedin, href: profile.socials.linkedin, label: "LinkedIn" },
-  { icon: Twitter, href: profile.socials.twitter, label: "Twitter" },
+  { icon: Twitter, href: profile.socials.facebook, label: "Facebook" },
   { icon: Mail, href: `mailto:${profile.email}`, label: "Email" },
 ];
 
