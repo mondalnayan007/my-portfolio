@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────
-   ✏️  EDIT THIS FILE — all portfolio content lives here.
-   Items marked "placeholder" should be replaced with real info.
-   ───────────────────────────────────────────────────────────── */
+    ✏️  EDIT THIS FILE — all portfolio content lives here.
+    Items marked "placeholder" should be replaced with real info.
+    ───────────────────────────────────────────────────────────── */
 
 export const profile = {
   name: "Nayan Mondal",
@@ -43,7 +43,8 @@ export type Project = {
   id: string;
   title: string;
   category: string;
-  image:string;
+  image: string;
+  gallery?: string[]; // Added gallery support
   description: string;
   details: string;
   features: string[];
@@ -62,6 +63,11 @@ export const projects: Project[] = [
     title: "Multi-Agent Real Estate SaaS",
     category: "SaaS · Multi-tenant",
     image: "/project_images/realestate.png",
+    gallery: [
+      "/project_images/realestate.png",
+      "/project_images/realestate.png", // Replace with extra gallery screenshots if available
+      "/project_images/realestate.png",
+    ],
     description:
       "Agents subscribe to a plan and instantly get their own branded property website on a personal subdomain.",
     details:
@@ -78,14 +84,19 @@ export const projects: Project[] = [
     icon: "building",
     from: "#4f46e5",
     to: "#06b6d4",
-    live: "https://bdproperties.site", // placeholder
-    github: "https://github.com/mondalnayan007/real-estate-client", // placeholder
+    live: "https://bdproperties.site",
+    github: "https://github.com/mondalnayan007/real-estate-client",
   },
   {
     id: "ecommerce",
     title: "E-Commerce Store",
     category: "Full-stack · Retail",
     image: "/project_images/ecommerce.png",
+    gallery: [
+      "/project_images/ecommerce.png",
+      "/project_images/ecommerce.png",
+      "/project_images/ecommerce.png",
+    ],
     description:
       "A complete online shop with product discovery, cart, checkout and an admin panel for managing the catalogue.",
     details:
@@ -110,6 +121,11 @@ export const projects: Project[] = [
     title: "Real-time Chat App",
     category: "WebSockets · Realtime",
     image: "/project_images/chatting.png",
+    gallery: [
+      "/project_images/chatting.png",
+      "/project_images/chatting.png",
+      "/project_images/chatting.png",
+    ],
     description:
       "Instant messaging with live presence, typing indicators and message history that never loses a conversation.",
     details:
@@ -134,6 +150,11 @@ export const projects: Project[] = [
     title: "Online Book Reader",
     category: "Content · Reading",
     image: "/project_images/book.png",
+    gallery: [
+      "/project_images/book.png",
+      "/project_images/book.png",
+      "/project_images/book.png",
+    ],
     description:
       "A distraction-free reading experience where users browse a library and read books right in the browser.",
     details:
@@ -176,14 +197,13 @@ export const skillGroups = [
     icon: "wrench" as const,
     items: ["Git & GitHub", "Postman", "Vercel", "Figma", "VS Code", "npm"],
   },
-]; // edit to match your real skills
+];
 
 export const marqueeSkills = [
   "MongoDB", "Express", "React", "Node.js", "Next.js", "TypeScript", "Socket.io",
   "Tailwind CSS", "Redux", "GSAP", "Three.js", "Framer Motion", "REST", "JWT",
 ];
 
-// Placeholder timeline — replace titles, dates and descriptions with yours.
 export const experience = [
   {
     period: "2025 — Now",

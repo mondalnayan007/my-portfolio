@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowUpRight, BookOpen, Building2, Check, Github, MessageCircle, ShoppingCart, X } from "lucide-react";
+import { ArrowUpRight, BookOpen, Building2, Check, ChevronLeft, ChevronRight, Github, MessageCircle, ShoppingCart, X } from "lucide-react";
 import { projects, type Project } from "@/lib/data";
 import { cn, EASE } from "@/lib/utils";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -10,52 +10,46 @@ import SpotlightCard from "@/components/ui/SpotlightCard";
 
 const icons = { building: Building2, cart: ShoppingCart, chat: MessageCircle, book: BookOpen } as const;
 
-/** Gradient banner with a floating icon and chips — used on the card and in the modal. */
-
-/** Displays the real project screenshot in the card and modal. */
+/** Original Visual Component */
 function ProjectVisual({
-  p,
+  image,
+  title,
   className,
 }: {
-  p: Project;
+  image?: string;
+  title: string;
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "relative overflow-hidden bg-slate-900",
-        className
-      )}
-    >
-      {p.image ? (
+    <div className={cn("relative overflow-hidden bg-slate-900", className)}>
+      {image ? (
         <img
-          src={p.image}
-          alt={`${p.title} screenshot`}
+          src={image}
+          alt={`${title} screenshot`}
           className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-105"
         />
       ) : (
         <div
           className="grid h-full w-full place-items-center"
           style={{
-            background: `linear-gradient(135deg, ${p.from}, ${p.to})`,
+            background: `linear-gradient(135deg, #6366f1, #a855f7)`,
           }}
         >
-          <span className="text-2xl font-semibold text-white">
-            {p.title}
-          </span>
+          <span className="text-2xl font-semibold text-white">{title}</span>
         </div>
       )}
     </div>
   );
 }
 
-
-
+/** Original Card Component */
 function ProjectCard({ p, index, onOpen }: { p: Project; index: number; onOpen: (p: Project) => void }) {
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.5);
   const rotateX = useSpring(useTransform(my, [0, 1], [5, -5]), { stiffness: 180, damping: 18 });
   const rotateY = useSpring(useTransform(mx, [0, 1], [-5, 5]), { stiffness: 180, damping: 18 });
+
+  const galleryImages = p.gallery && p.gallery.length > 0 ? p.gallery : [p.image];
 
   return (
     <motion.div
@@ -84,10 +78,11 @@ function ProjectCard({ p, index, onOpen }: { p: Project; index: number; onOpen: 
           aria-label={`Open details for ${p.title}`}
           onClick={() => onOpen(p)}
           onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onOpen(p)}
+          className="cursor-pointer"
         >
           <SpotlightCard color={`${p.from}30`} className="h-full">
             <motion.div layoutId={`visual-${p.id}`} className="h-56 overflow-hidden">
-              <ProjectVisual p={p} className="h-full w-full" />
+              <ProjectVisual image={galleryImages[0]} title={p.title} className="h-full w-full" />
             </motion.div>
             <div className="p-7">
               <p className="font-mono text-xs text-slate-500">{p.category}</p>
@@ -113,7 +108,15 @@ function ProjectCard({ p, index, onOpen }: { p: Project; index: number; onOpen: 
   );
 }
 
+/** Brand New Component Library Styled Modern Gallery */
 function ProjectModal({ p, onClose }: { p: Project | null; onClose: () => void }) {
+  const images = p?.gallery && p.gallery.length > 0 ? p.gallery : p?.image ? [p.image] : [];
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [p]);
+
   useEffect(() => {
     if (!p) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -124,6 +127,16 @@ function ProjectModal({ p, onClose }: { p: Project | null; onClose: () => void }
       document.body.style.overflow = "";
     };
   }, [p, onClose]);
+
+  const activeImage = images[activeIndex] || p?.image || "";
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <AnimatePresence>
@@ -140,27 +153,103 @@ function ProjectModal({ p, onClose }: { p: Project | null; onClose: () => void }
           aria-modal="true"
           aria-label={p.title}
         >
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-md" />
           <motion.div
             initial={{ y: 40, scale: 0.96, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 30, scale: 0.96, opacity: 0 }}
             transition={{ duration: 0.5, ease: EASE }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-ink-800 shadow-2xl"
+            className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-white/15 bg-slate-900 shadow-2xl"
           >
+            {/* Close Button */}
             <button
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-black/70"
+              className="absolute right-4 top-4 z-30 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/90 cursor-pointer border border-white/10"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <motion.div layoutId={`visual-${p.id}`} className="h-64 overflow-hidden">
-              <ProjectVisual p={p} className="h-full w-full" />
-            </motion.div>
+            {/* --- MODERN COMPONENT LIBRARY GALLERY SECTION --- */}
+            <div className="relative bg-slate-950 p-6 sm:p-8 border-b border-white/10">
+              {/* Top Meta info & Counter */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-mono text-xs uppercase tracking-wider text-brand-cyan px-3 py-1 rounded-full bg-brand-cyan/10 border border-brand-cyan/20">
+                  Interactive Preview
+                </span>
+                {images.length > 1 && (
+                  <span className="font-mono text-xs text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                    {activeIndex + 1} / {images.length}
+                  </span>
+                )}
+              </div>
 
+              {/* Main Showcase Stage with Navigation Arrows */}
+              <div className="relative h-72 sm:h-[420px] w-full overflow-hidden rounded-2xl border border-white/15 bg-black shadow-2xl group">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeIndex}
+                    src={activeImage}
+                    alt={`${p.title} preview`}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full w-full object-cover object-top"
+                  />
+                </AnimatePresence>
+
+                {/* Left/Right Floating Arrows (Visible if multiple images) */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={handlePrev}
+                      aria-label="Previous image"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/90 cursor-pointer"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      aria-label="Next image"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/90 cursor-pointer"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+
+                {/* Subtle Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+              </div>
+
+              {/* Modern Glassmorphic Thumbnail Carousel */}
+              {images.length > 1 && (
+                <div className="mt-5 flex items-center justify-center gap-3 overflow-x-auto pb-1 scrollbar-none">
+                  {images.map((img, idx) => {
+                    const isActive = activeIndex === idx;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveIndex(idx)}
+                        className={cn(
+                          "relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 focus:outline-none cursor-pointer",
+                          isActive
+                            ? "border-brand-cyan ring-4 ring-brand-cyan/20 scale-105 opacity-100 shadow-xl"
+                            : "border-white/15 opacity-40 hover:opacity-100 hover:border-white/40"
+                        )}
+                      >
+                        <img src={img} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Content Details */}
             <div className="p-8 sm:p-10">
               <p className="font-mono text-xs text-slate-500">{p.category}</p>
               <h3 className="mt-2 text-3xl font-bold text-white sm:text-4xl">{p.title}</h3>
@@ -198,7 +287,7 @@ function ProjectModal({ p, onClose }: { p: Project | null; onClose: () => void }
                   href={p.live}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-ink transition hover:bg-slate-200"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-ink transition hover:bg-slate-200 cursor-pointer"
                 >
                   Open live site <ArrowUpRight className="h-4 w-4" />
                 </a>
@@ -206,7 +295,7 @@ function ProjectModal({ p, onClose }: { p: Project | null; onClose: () => void }
                   href={p.github}
                   target="_blank"
                   rel="noreferrer"
-                  className="glass inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                  className="glass inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 cursor-pointer"
                 >
                   <Github className="h-4 w-4" /> View source
                 </a>
